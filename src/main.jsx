@@ -1,20 +1,38 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import Home from './home';
+
+//Style Import
 import './assets/css/bootstrap.css';
 import './assets/javascript/bootstrap.bundle';
-import ProductList from './productList';
+import './assets/css/style.css'
 
+//Routes, Loader & Action Import
+import ErrorPage from './routes/error';
+import App from './app';
+import Home from './routes/home';
+import ProductList, {loader as productListLoader} from './routes/productList';
+
+//Router
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home />,
-    errorElement: <h1>Error</h1>,
+    element: <App />,
     children: [
       {
+        index: true,
+        element: <Home />,
+
+      },
+      {
         path: "/product/list",
-        element: <ProductList />
+        element: <ProductList />,
+        loader: productListLoader,
+        errorElement: <h2>Product error</h2>
+      },
+      {
+        path: "*",
+        element: <ErrorPage />
       }
     ]
   }
