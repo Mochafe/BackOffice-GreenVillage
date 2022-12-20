@@ -29,7 +29,9 @@ export default function ProductView() {
                     </svg>
                 </Link>
                 <Form method="delete" action={`/product/${product.id}/delete`}>
-                    <button type="submit" className="text-danger bg-white border-0">
+                    <button type="submit" className="text-danger bg-white border-0" onClick={(event) => {
+                        event.currentTarget.innerHTML = `<div class="spinner-border text-danger" role="status"><span class="sr-only"></span></div>`;
+                    }}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" className="bi bi-trash" viewBox="0 0 16 16">
                             <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
                             <path fillRule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
@@ -67,6 +69,64 @@ export default function ProductView() {
                                 <span className="visually-hidden">Next</span>
                             </button>
                         </div>
+                    </div>
+                    <div className="col-3">
+
+                        <label for="price">Prix</label>
+                        <div className="input-group mb-5">
+                            <input type="text" id="price" className="form-control" aria-label="Prix" aria-describedby="Prix" defaultValue={product.price} disabled />
+                            <span className="input-group-text" id="Prix">€</span>
+                        </div>
+
+                        <label for="quantity">Quantité</label>
+                        <div className="input-group mb-5">
+                            <input type="number" id="quantity" className="form-control" aria-label="Quantité" aria-describedby="Quantité" defaultValue={product.quantity} disabled />
+                            <span className="input-group-text" id="Quantité">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box" viewBox="0 0 16 16">
+                                    <path d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5 8 5.961 14.154 3.5 8.186 1.113zM15 4.239l-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.838L1 4.239v7.923l6.5 2.6zM7.443.184a1.5 1.5 0 0 1 1.114 0l7.129 2.852A.5.5 0 0 1 16 3.5v8.662a1 1 0 0 1-.629.928l-7.185 2.874a.5.5 0 0 1-.372 0L.63 13.09a1 1 0 0 1-.63-.928V3.5a.5.5 0 0 1 .314-.464L7.443.184z" />
+                                </svg>
+                            </span>
+                        </div>
+
+                        <label for="category">Categorie</label>
+                        <div className="input-group mb-5">
+                            <input type="text" id="category" className="form-control" aria-label="Quantité" aria-describedby="Quantité" defaultValue={product.category.name} disabled />
+                            <span className="input-group-text" id="Quantité">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-collection" viewBox="0 0 16 16">
+                                    <path d="M2.5 3.5a.5.5 0 0 1 0-1h11a.5.5 0 0 1 0 1h-11zm2-2a.5.5 0 0 1 0-1h7a.5.5 0 0 1 0 1h-7zM0 13a1.5 1.5 0 0 0 1.5 1.5h13A1.5 1.5 0 0 0 16 13V6a1.5 1.5 0 0 0-1.5-1.5h-13A1.5 1.5 0 0 0 0 6v7zm1.5.5A.5.5 0 0 1 1 13V6a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-13z" />
+                                </svg>
+                            </span>
+                        </div>
+                        {
+                            (product.discount) ?
+                                <>
+                                    <label for="discount">Promotion</label>
+                                    <div className="input-group mb-5">
+                                        <input type="text" id="discount" className="form-control" aria-label="Promotion" aria-describedby="discountD" defaultValue={product.discount} disabled />
+                                        <span className="input-group-text" id="discountD">
+                                            €
+                                        </span>
+                                    </div>
+                                </>
+                                :
+                                ""
+                        }
+
+                        {
+                            (product.discountRate) ?
+                                <>
+                                    <label for="discountRate">Taux de réduction</label>
+                                    <div className="input-group mb-5">
+                                        <input type="text" id="discountRate" className="form-control" aria-label="Promotion" aria-describedby="discountD" defaultValue={product.discountRate} disabled />
+                                        <span className="input-group-text" id="discountD">
+                                            %
+                                        </span>
+                                    </div>
+                                </>
+                                :
+                                ""
+                        }
+
                     </div>
                 </div>
             </div>

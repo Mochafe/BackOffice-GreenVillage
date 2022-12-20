@@ -27,8 +27,8 @@
 .product-view-img {
     display: block;
 
-    max-height: 400px;
-    min-height: 400px;
+    max-height: 560px;
+    min-height: 560px;
 
 
     margin-left: auto;
@@ -37,6 +37,12 @@
 
 .scroll-top {
     position: fixed;
-    bottom: 25px;
+    bottom: 50px;
+    left: 25px;
+}
+
+.scroll-bottom {
+    position: fixed;
+    bottom: 0px;
     left: 25px;
 }
