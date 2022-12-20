@@ -11,9 +11,12 @@ export async function loader({ request }) {
         params[key] = value;
     });
 
+
+    let categories = await (await fetch(`${config.url}/api/categories`)).json()
+
     const products = await (await fetch(`${config.url}/api/products?${makeUrlFromParams(params)}`)).json();
 
-    return { products, params };
+    return { products, params, categories };
 }
 
 function makeUrlFromParams(params) {
@@ -51,9 +54,24 @@ function previousPageObject(params) {
     return obj;
 }
 
+function makeCategoryOption(categories) {
+    let buff = []
+
+    categories["hydra:member"].forEach(value => {
+        if (value.parent) {
+            buff.push(
+                <option value={value.id}>{value.name}</option>
+            )
+        }
+
+    });
+
+    return buff;
+}
+
 
 export default function ProductList() {
-    let { products, params } = useLoaderData();
+    let { products, params, categories } = useLoaderData();
     params.page = (params.page) ? params.page : 1;
 
     let previousPageParam = previousPageObject(params);
@@ -65,7 +83,10 @@ export default function ProductList() {
         behavior: "smooth"
     })
 
-
+    console.log(categories)
+    categories["hydra:member"].forEach(value => {
+        console.log(value["name"])
+    })
 
 
     return (
@@ -84,12 +105,12 @@ export default function ProductList() {
                     <div className="border border-secondary rounded-end w-100 p-3">
                         <h2 className="text-center border-bottom pb-2">Filtre</h2>
                         <Form>
-                            <label htmlFor="productName">Nom du Produit:</label>
-                            <div className="input-group">
-                                <input type="search" id="productName" name="name" className="form-control" placeholder="Piano, Batterie..." />
-                            </div>
+                            <div className="row mt-4">
+                                <label htmlFor="productName">Nom du Produit:</label>
+                                <div className="input-group mb-3">
+                                    <input type="search" id="productName" name="name" className="form-control" placeholder="Piano, Batterie..." />
+                                </div>
 
-                            <div className="row">
                                 <div className="col-6">
                                     <label htmlFor="minPrice">Prix Minimum</label>
                                     <div className="input-group">
@@ -106,6 +127,20 @@ export default function ProductList() {
                                         <input className="form-control" type="number" name="price[lte]" id="maxPrice" defaultValue={9999} />
                                         <span className="input-group-text">
                                             €
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className="div-12 mt-3">
+                                    <label htmlFor="category">Categorie</label>
+                                    <div className="input-group">
+                                        <select className="form-select" name="category" id="category" defaultValue={0}>
+                                            <option value="">Selectionner une Categorie</option>
+                                            {makeCategoryOption(categories)}
+                                        </select>
+                                        <span className="input-group-text">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-collection" viewBox="0 0 16 16">
+                                                <path d="M2.5 3.5a.5.5 0 0 1 0-1h11a.5.5 0 0 1 0 1h-11zm2-2a.5.5 0 0 1 0-1h7a.5.5 0 0 1 0 1h-7zM0 13a1.5 1.5 0 0 0 1.5 1.5h13A1.5 1.5 0 0 0 16 13V6a1.5 1.5 0 0 0-1.5-1.5h-13A1.5 1.5 0 0 0 0 6v7zm1.5.5A.5.5 0 0 1 1 13V6a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-13z" />
+                                            </svg>
                                         </span>
                                     </div>
                                 </div>
