@@ -11,9 +11,9 @@ import './assets/css/style.css'
 import ErrorPage from './routes/error';
 import App from './app';
 import Home from './routes/home';
-import ProductList, {loader as productListLoader} from './routes/productList';
-import ProductView, {loader as productViewLoader} from './routes/productView';
-import { action as productDeleteAction } from './routes/productDelete';
+import ProductList, { loader as productListLoader } from './routes/product/productList';
+import ProductView, { loader as productViewLoader } from './routes/product/productView';
+import { action as productDeleteAction } from './routes/product/productDelete';
 import Order from './routes/order';
 import Account from './routes/account';
 
@@ -33,36 +33,38 @@ const router = createBrowserRouter([
         path: "/product/list",
         element: <ProductList />,
         loader: productListLoader,
-        errorElement: <h2>Product error</h2>
-      },
-      {
-        path: "/product/list/:page",
-        element: <ProductList />,
-        loader: productListLoader,
-        errorElement: <h2>Product error</h2>
+        errorElement: <ErrorPage />,
       },
       {
         path: "/product/:product/view",
         element: <ProductView />,
         loader: productViewLoader,
-        errorElement: <h2>Product error</h2>
+        errorElement: <ErrorPage />,
+      },
+      {
+        path: "/product/:product/edit",
+        action: productDeleteAction,
+        errorElement: <ErrorPage />,
       },
       {
         path: "/product/:product/delete",
         action: productDeleteAction,
-        errorElement: <h1>Erreur lors de la suppresion</h1>
+        errorElement: <ErrorPage />,
       },
       {
         path: "/category",
-        errorElement: <h1>Erruer</h1>
+        errorElement: <ErrorPage />,
       },
       {
         path: "/order",
-        element: <Order />
+        element: <Order />,
+        errorElement: <ErrorPage />,
       },
       {
         path: "/account",
-        element: <Account />
+        element: <Account />,
+        errorElement: <ErrorPage />,
+
       },
       {
         path: "*",

@@ -1,24 +1,72 @@
 import { useLoaderData, Link, Form } from "react-router-dom";
-import config from "../../config.json"
+import config from "../../../config.json"
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
+import { useEffect, useState } from "react";
 
 
-export async function loader({ params }) {
-    const page = (params.page) ? params.page : 1;
-    const products = await (await fetch(`${config.url}/api/products?page=${page}`)).json();
+export async function loader({ request }) {
+    const url = new URL(request.url);
+    let params = {};
+    url.searchParams.forEach((value, key) => {
+        params[key] = value;
+    });
 
+    const products = await (await fetch(`${config.url}/api/products?${makeUrlFromParams(params)}`)).json();
 
-    return { products, page };
+    return { products, params };
 }
 
+function makeUrlFromParams(params) {
+    let urlParams = "";
+    let count = 0;
+
+    for (const key in params) {
+        if (count === 0) {
+            urlParams += `${key}=${params[key]}`;
+        } else {
+            urlParams += `&${key}=${params[key]}`;
+        }
+
+        count++;
+    }
+
+    return urlParams;
+}
+
+function nextPageObject(params) {
+    let obj = {
+        ...params
+    }
+    obj.page++;
+
+    return obj;
+}
+
+function previousPageObject(params) {
+    let obj = {
+        ...params
+    }
+    obj.page--;
+
+    return obj;
+}
+
+
 export default function ProductList() {
-    const { products, page } = useLoaderData();
+    let { products, params } = useLoaderData();
+    params.page = (params.page) ? params.page : 1;
+
+    let previousPageParam = previousPageObject(params);
+    let nextPageParam = nextPageObject(params);
 
     window.scrollTo({
         top: 0,
         left: 0,
         behavior: "smooth"
     })
+
+
+
 
     return (
         <div className="container-fluid">
@@ -35,7 +83,45 @@ export default function ProductList() {
                 <div className="col-3 ps-0">
                     <div className="border border-secondary rounded-end w-100 p-3">
                         <h2 className="text-center border-bottom pb-2">Filtre</h2>
+                        <Form>
+                            <label htmlFor="productName">Nom du Produit:</label>
+                            <div className="input-group">
+                                <input type="search" id="productName" name="name" className="form-control" placeholder="Piano, Batterie..." />
+                            </div>
+
+                            <div className="row">
+                                <div className="col-6">
+                                    <label htmlFor="minPrice">Prix Minimum</label>
+                                    <div className="input-group">
+                                        <input className="form-control" type="number" name="price[gte]" id="minPrice" defaultValue={0} />
+                                        <span className="input-group-text">
+                                            €
+                                        </span>
+                                    </div>
+
+                                </div>
+                                <div className="col-6">
+                                    <label htmlFor="maxPrice">Prix Maximum</label>
+                                    <div className="input-group">
+                                        <input className="form-control" type="number" name="price[lte]" id="maxPrice" defaultValue={9999} />
+                                        <span className="input-group-text">
+                                            €
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="submit" className="bg-white border-0 d-block mx-auto mt-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+                                </svg>
+                            </button>
+
+                            <input type="hidden" name="page" value={params.page} />
+                        </Form>
                     </div>
+
+
                     <button className="page-link scroll-top" onClick={() => {
                         window.scrollTo({
                             top: 0,
@@ -56,8 +142,8 @@ export default function ProductList() {
                         })
                     }}>
 
-                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" class="bi bi-arrow-down-short" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 1 1 .708-.708L7.5 10.293V4.5A.5.5 0 0 1 8 4z" />
+                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" className="bi bi-arrow-down-short" viewBox="0 0 16 16">
+                            <path fillRule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 1 1 .708-.708L7.5 10.293V4.5A.5.5 0 0 1 8 4z" />
                         </svg>
                     </button>
                 </div>
@@ -67,6 +153,7 @@ export default function ProductList() {
                             products["hydra:member"].map((product) => (
                                 <div className="col-4" key={product.id}>
                                     <div className="card mb-3">
+                                        <span className="fs-6 text-muted text-uppercase text-end me-3 mt-2">Id: {product.id}</span>
                                         <img src={config.url + product.images[0].path} className="card-img-top card-product-img" alt={product.images[0].title} />
                                         <div className="card-body">
                                             <h5 className="card-title card-product-name">{product.name}</h5>
@@ -100,6 +187,8 @@ export default function ProductList() {
                                                 </Form>
                                             </div>
                                         </div>
+                                        <span className="fs-6 text-muted text-uppercase text-center">Réference: {product.reference}</span>
+
                                     </div>
                                 </div>
                             ))
@@ -116,7 +205,7 @@ export default function ProductList() {
                             {
                                 (products["hydra:view"]["hydra:previous"]) ?
                                     <li className="page-item">
-                                        <Link className="page-link" to={`/product/list/${Number(page) - 1}`}>
+                                        <Link className="page-link" to={"/product/list?" + makeUrlFromParams(previousPageParam)}>
                                             <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" className="bi bi-arrow-left-short" viewBox="0 0 16 16">
                                                 <path fillRule="evenodd" d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5z" />
                                             </svg>
@@ -132,14 +221,18 @@ export default function ProductList() {
                                     </li>
                             }
                             <li className="page-item my-auto">
-                                <Link className="page-link fs-3" href="#">
-                                    {page}
+                                <Link className="page-link fs-3 disabled">
+                                    {
+                                        (params.page) ?
+                                            params.page :
+                                            1
+                                    }
                                 </Link>
                             </li>
                             {
                                 (products["hydra:view"]["hydra:next"]) ?
                                     <li className="page-item">
-                                        <Link className="page-link" to={`/product/list/${Number(page) + 1}`}>
+                                        <Link className="page-link" to={"/product/list?" + makeUrlFromParams(nextPageParam)}>
                                             <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" className="bi bi-arrow-right-short" viewBox="0 0 16 16">
                                                 <path fillRule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z" />
                                             </svg>
