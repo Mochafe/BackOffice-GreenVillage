@@ -7,7 +7,7 @@ export async function action({ params }) {
     console.log(product);
 
     for(let i = 0; i < product.images.length; i++) {
-        await fetch(`/api/images/${i}`, {
+        await fetch(`${config.url}/api/images/${product.images[i].id}`, {
             method: "DELETE",
             headers: new Headers(),
             mode: "cors",
