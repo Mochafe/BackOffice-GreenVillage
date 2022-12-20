@@ -2,11 +2,9 @@ import { redirect, useNavigate } from "react-router-dom";
 import config from "../../config.json";
 
 
-//TODO upgrade this part
+//TODO upgrade this part 
 export async function action({ params }) {
     const product = await (await fetch(`${config.url}/api/products/${params.product}.json`)).json();
-
-    console.log(product);
 
     for(let i = 0; i < product.images.length; i++) {
         await fetch(`${config.url}/api/images/${product.images[i].id}`, {

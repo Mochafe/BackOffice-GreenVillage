@@ -4,7 +4,7 @@ import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 
 
 export async function loader() {
-    const products = await (await fetch(`${config.url}/api/products.json`)).json();
+    const products = await (await fetch(`${config.url}/api/products`)).json();
 
     return products;
 }
@@ -15,11 +15,11 @@ export default function ProductList() {
     return (
         <div className="container-fluid">
             <h1 className="text-center mt-5">Liste des produits</h1>
-            { 
-                (!products.length > 0)? 
-                <h5 className="text-center text-muted">Il n'y a pas de produit</h5>
-                :
-                <h5 className="text-center text-muted">({products.length})</h5>
+            {
+                (!products["hydra:totalItems"] > 0) ?
+                    <h5 className="text-center text-muted">Il n'y a pas de produit</h5>
+                    :
+                    <h5 className="text-center text-muted">({products["hydra:totalItems"]})</h5>
 
             }
 
@@ -28,14 +28,25 @@ export default function ProductList() {
                     <div className="border border-secondary rounded-end w-100 p-3">
                         <h2 className="text-center border-bottom pb-2">Filtre</h2>
                     </div>
+                    <button className="page-link scroll-top" onClick={() => {
+                        window.scrollTo({
+                            top: 0,
+                            left: 0,
+                            behavior: 'smooth'
+                        })
+                    }}>
 
+                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" className="bi bi-arrow-up-short" viewBox="0 0 16 16">
+                            <path fillRule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5z" />
+                        </svg>
+                    </button>
                 </div>
                 <div className="col-9">
                     <div className="row gx-3">
-                        { (products.length > 0)? 
-                            products.map((product) => (
+                        {(products["hydra:totalItems"] > 0) ?
+                            products["hydra:member"].map((product) => (
                                 <div className="col-4" key={product.id}>
-                                    <div className="card">
+                                    <div className="card mt-3">
                                         <img src={config.url + product.images[0].path} className="card-img-top card-product-img" alt={product.images[0].title} />
                                         <div className="card-body">
                                             <h5 className="card-title card-product-name">{product.name}</h5>
@@ -58,7 +69,9 @@ export default function ProductList() {
                                                     </svg>
                                                 </Link>
                                                 <Form method="delete" action={`/product/${product.id}/delete`}>
-                                                    <button type="submit" className="text-danger bg-white border-0">
+                                                    <button type="submit" className="text-danger bg-white border-0" onClick={(event) => {
+                                                        event.currentTarget.innerHTML = `<div class="spinner-border text-danger" role="status"><span class="sr-only"></span></div>`;
+                                                    }}>
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" className="bi bi-trash" viewBox="0 0 16 16">
                                                             <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
                                                             <path fillRule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
@@ -70,12 +83,35 @@ export default function ProductList() {
                                     </div>
                                 </div>
                             ))
-                        :
-                        ""
-                    }
+                            :
+                            ""
+                        }
                     </div>
                 </div>
             </div>
+            <nav aria-label="Page navigation">
+                <ul className="pagination justify-content-center mt-5">
+                    <li className="page-item">
+                        <Link className="page-link" href="#">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" className="bi bi-arrow-left-short" viewBox="0 0 16 16">
+                                <path fillRule="evenodd" d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5z" />
+                            </svg>
+                        </Link>
+                    </li>
+                    <li className="page-item my-auto">
+                        <Link className="page-link fs-3" href="#">
+                            1
+                        </Link>
+                    </li>
+                    <li className="page-item">
+                        <Link className="page-link" href="#">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" className="bi bi-arrow-right-short" viewBox="0 0 16 16">
+                                <path fillRule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z" />
+                            </svg>
+                        </Link>
+                    </li>
+                </ul>
+            </nav>
         </div>
     )
 }
