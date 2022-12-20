@@ -1,4 +1,4 @@
-import { Link, useNavigation } from "react-router-dom";
+import { NavLink, useNavigation } from "react-router-dom";
 
 function Navbar() {
     const navigation = useNavigation();
@@ -13,16 +13,19 @@ function Navbar() {
                 <div className="collapse navbar-collapse" id="navbarColor01">
                     <ul className="navbar-nav mx-auto">
                         <li className="nav-item">
-                            <Link className="nav-link" to="/">Tableau de bord</Link>
+                            <NavLink className="nav-link" to="/">Tableau de bord</NavLink>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link" to="/product/list">Produits</Link>
+                            <NavLink className="nav-link" to="/category">Categories</NavLink>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link" href="/order">Commandes</Link>
+                            <NavLink className="nav-link" to="/product/list">Produits</NavLink>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link" href="/account">Compte</Link>
+                            <NavLink className="nav-link" to="/order">Commandes</NavLink>
+                        </li>
+                        <li className="nav-item">
+                            <NavLink className="nav-link" to="/account">Compte</NavLink>
                         </li>
                     </ul>
                     <form className="d-flex">

@@ -23,3 +23,14 @@
 
     overflow: hidden;
 }
+
+.product-view-img {
+    display: block;
+
+    max-height: 400px;
+    min-height: 400px;
+
+
+    margin-left: auto;
+    margin-right: auto;
+}
