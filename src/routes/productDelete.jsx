@@ -1,6 +1,8 @@
 import { redirect, useNavigate } from "react-router-dom";
 import config from "../../config.json";
 
+
+//TODO upgrade this part
 export async function action({ params }) {
     const product = await (await fetch(`${config.url}/api/products/${params.product}.json`)).json();
 
