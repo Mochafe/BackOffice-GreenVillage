@@ -36,14 +36,23 @@ export default function ProductNew() {
         for (const content in contents) {
             buff.push(
                 <div className="d-flex border input-group">
-                    <input className="form-control border" type={"text"} placeholder="Example: Corps, Couleur..." value={content} onChange={(event) => {
-                        setContents(contents[content] = event.currentTarget.value);
-                    }}/>
-                    <input className="form-control border" type={"text"} placeholder="Example: Tilleul, Blanc..." value={contents[content]} />
+                    <input id={content} className="form-control border border-secondary" type={"text"} placeholder="Example: Corps, Couleur..." value={String(content)} disabled />
+                    <input className="form-control border border-secondary" type={"text"} placeholder="Example: Tilleul, Blanc..." value={contents[content]} disabled />
+                    <button type="button" className="input-group-text" onClick={(event) => {
+                        let tempObj = {
+                            ...contents
+                        }
+                        delete tempObj[content];
+                        setContents(tempObj);
+                    }}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-dash" viewBox="0 0 16 16">
+                            <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z" />
+                        </svg>
+                    </button>
                 </div>
             );
         }
-    
+
         return buff;
     }
 
@@ -52,6 +61,8 @@ export default function ProductNew() {
 
     const [description, setDescription] = useState("");
     const [contents, setContents] = useState({});
+
+    console.log(contents);
 
     return (
         <>
@@ -133,6 +144,7 @@ export default function ProductNew() {
                         <div className="w-50 me-1">
                             <label htmlFor="description">Description</label>
                             <textarea className="form-control w-100 h-100" rows={15} id="description" name="description" onChange={(event) => {
+
                                 setDescription(event.currentTarget.value);
                             }}>
                             </textarea>
@@ -152,12 +164,19 @@ export default function ProductNew() {
                         {
                             MakeInputFromContent()
                         }
-                        
-                        <div className="d-flex border input-group">
+
+                        <div className="d-flex border input-group" id="contentInput">
                             <input className="form-control border" id="new-key" type={"text"} placeholder="Example: Corps, Couleur..." />
                             <input className="form-control border" id="new-value" type={"text"} placeholder="Example: Tilleul, Blanc..." />
-                            <button type="button" className="input-group-text" onClick={() => {
-                                setContents(contents += )
+                            <button type="button" className="input-group-text" onClick={(event) => {
+                                let tempObj = {
+                                    ...contents
+                                }
+                                tempObj[document.getElementById("new-key").value] = document.getElementById("new-value").value;
+                                setContents(tempObj);
+
+                                document.getElementById("new-key").value = "";
+                                document.getElementById("new-value").value = "";
                             }}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
                                     <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />

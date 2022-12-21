@@ -285,7 +285,7 @@ export default function ProductList() {
                                                 </Link>
                                                 <Form method="delete" action={`/product/${product.id}/delete`}>
                                                     <button type="submit" className="text-danger bg-white border-0" onClick={(event) => {
-                                                        event.currentTarget.innerHTML = `<div className="spinner-border text-danger" role="status"><span className="sr-only"></span></div>`;
+                                                        event.currentTarget.innerHTML = `<div class="spinner-border text-danger" role="status"><span class="sr-only"></span></div>`;
                                                     }}>
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" className="bi bi-trash" viewBox="0 0 16 16">
                                                             <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
