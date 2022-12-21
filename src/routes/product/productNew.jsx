@@ -97,11 +97,11 @@ export default function ProductNew() {
 
                     <div className="col-6">
                         <label htmlFor="name">Nom du produit</label>
-                        <input className="form-control" id="name" name="name" type="text" placeholder="Example: Guitar XM-6125" />
+                        <input className="form-control" id="name" name="name" type="text" placeholder="Example: Guitar XM-6125" required/>
                     </div>
                     <div className="col-6">
                         <label htmlFor="category">Categorie</label>
-                        <select className="form-select" id="category" name="category" type="text" defaultValue={""}>
+                        <select className="form-select" id="category" name="category" type="text" defaultValue={""} required>
                             <option value={""}>Séléctionner une catégorie</option>
                             {
                                 makeCategoryOption(categories)
@@ -111,7 +111,7 @@ export default function ProductNew() {
                     <div className="col-4">
                         <label htmlFor="price">Prix</label>
                         <div className="input-group">
-                            <input className="form-control text-center" id="price" name="price" type="number" placeholder="42" />
+                            <input className="form-control text-center" id="price" name="price" type="number" placeholder="42" required/>
                             <span className="input-group-text">
                                 €
                             </span>
@@ -120,7 +120,7 @@ export default function ProductNew() {
                     <div className="col-4">
                         <label htmlFor="quantity">Quantité</label>
                         <div className="input-group">
-                            <input className="form-control text-center" id="quantité" name="quantité" type="number" placeholder="42" />
+                            <input className="form-control text-center" id="quantité" name="quantité" type="number" placeholder="42"/>
                             <span className="input-group-text">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-box" viewBox="0 0 16 16">
                                     <path d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5 8 5.961 14.154 3.5 8.186 1.113zM15 4.239l-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.838L1 4.239v7.923l6.5 2.6zM7.443.184a1.5 1.5 0 0 1 1.114 0l7.129 2.852A.5.5 0 0 1 16 3.5v8.662a1 1 0 0 1-.629.928l-7.185 2.874a.5.5 0 0 1-.372 0L.63 13.09a1 1 0 0 1-.63-.928V3.5a.5.5 0 0 1 .314-.464L7.443.184z" />
@@ -190,10 +190,16 @@ export default function ProductNew() {
 
                     <input type="hidden" name="content" value={contents} />
 
+                    <img id="preview" />
+
                     <div class="col-12">
                         <label htmlFor="images" class="form-label">Images</label>
-                        <input class="form-control" type="file" id="images" />
+                        <input class="form-control" type="file" id="images" accept="image/*" multiple/>
                     </div>
+
+                    <button className="btn btn-primary my-5 w-25 mx-auto" type="submit">
+                        Créer le produit
+                    </button>
 
                 </Form>
             </div>
