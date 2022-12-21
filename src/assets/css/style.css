@@ -18,8 +18,8 @@
 }
 
 .card-product-description {
-    max-height: 120px;
-    min-height: 120px;
+    max-height: 220px;
+    min-height: 220px;
 
     overflow: hidden;
 }

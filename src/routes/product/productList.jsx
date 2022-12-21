@@ -1,7 +1,6 @@
 import { useLoaderData, Link, Form } from "react-router-dom";
 import config from "../../../config.json"
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
-import { useEffect, useState } from "react";
 
 
 export async function loader({ request }) {
@@ -77,15 +76,23 @@ export default function ProductList() {
     let previousPageParam = previousPageObject(params);
     let nextPageParam = nextPageObject(params);
 
+    let productsSell = [];
+
+    products["hydra:member"].forEach(product => {
+        let quantity = 0;
+        product.orderDetails.forEach(orderDetail => {
+            console.log(orderDetail.quantity)
+            quantity += Number(orderDetail.quantity);
+        });
+        productsSell[product.id] = quantity;
+    });
+
+    console.log(productsSell);
+
     window.scrollTo({
         top: 0,
         left: 0,
         behavior: "smooth"
-    })
-
-    console.log(categories)
-    categories["hydra:member"].forEach(value => {
-        console.log(value["name"])
     })
 
 
@@ -134,7 +141,7 @@ export default function ProductList() {
                                     <label htmlFor="category">Categorie</label>
                                     <div className="input-group">
                                         <select className="form-select" name="category" id="category" defaultValue={0}>
-                                            <option value="">Selectionner une Categorie</option>
+                                            <option value="">Selectionner une Catégorie</option>
                                             {makeCategoryOption(categories)}
                                         </select>
                                         <span className="input-group-text">
@@ -188,15 +195,77 @@ export default function ProductList() {
                             products["hydra:member"].map((product) => (
                                 <div className="col-4" key={product.id}>
                                     <div className="card mb-3">
-                                        <span className="fs-6 text-muted text-uppercase text-end me-3 mt-2">Id: {product.id}</span>
+                                        <div className="d-flex justify-content-between my-1" >
+                                            <span className="fs-6 text-muted text-uppercase text-start ms-2">Catégorie: {product.category.name}</span>
+                                            <span className="fs-6 text-muted text-uppercase text-end me-2">Id: {product.id}</span>
+                                        </div>
+
                                         <img src={config.url + product.images[0].path} className="card-img-top card-product-img" alt={product.images[0].title} />
                                         <div className="card-body">
                                             <h5 className="card-title card-product-name">{product.name}</h5>
-                                            <p className="card-text card-product-description">
-                                                <ReactMarkdown>
-                                                    {product.description}
-                                                </ReactMarkdown>
-                                            </p>
+                                            <div className="card-text card-product-description">
+                                                <div className="row gx-1">
+                                                    <div className="col-6">
+                                                        <label>Quantité</label>
+                                                        <div className="input-group">
+                                                            <input className="form-control text-center text-muted disabled" type="text" value={product.quantity} disabled />
+                                                            <span className="input-group-text">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-box" viewBox="0 0 16 16">
+                                                                    <path d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5 8 5.961 14.154 3.5 8.186 1.113zM15 4.239l-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.838L1 4.239v7.923l6.5 2.6zM7.443.184a1.5 1.5 0 0 1 1.114 0l7.129 2.852A.5.5 0 0 1 16 3.5v8.662a1 1 0 0 1-.629.928l-7.185 2.874a.5.5 0 0 1-.372 0L.63 13.09a1 1 0 0 1-.63-.928V3.5a.5.5 0 0 1 .314-.464L7.443.184z" />
+                                                                </svg>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div className="col-6">
+                                                        <label>Quantité Vendu</label>
+                                                        <div className="input-group">
+                                                            <input className="form-control text-center text-muted disabled" type="text" value={productsSell[product.id]} disabled />
+                                                            <span className="input-group-text">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-seam" viewBox="0 0 16 16">
+                                                                    <path d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5l2.404.961L10.404 2l-2.218-.887zm3.564 1.426L5.596 5 8 5.961 14.154 3.5l-2.404-.961zm3.25 1.7-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.838L1 4.239v7.923l6.5 2.6zM7.443.184a1.5 1.5 0 0 1 1.114 0l7.129 2.852A.5.5 0 0 1 16 3.5v8.662a1 1 0 0 1-.629.928l-7.185 2.874a.5.5 0 0 1-.372 0L.63 13.09a1 1 0 0 1-.63-.928V3.5a.5.5 0 0 1 .314-.464L7.443.184z" />
+                                                                </svg>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div className="col-6">
+                                                        <label>Prix</label>
+                                                        <div className="input-group">
+                                                            <input className="form-control text-center text-muted disabled" type="text" value={product.price} disabled />
+                                                            <span className="input-group-text">
+                                                                €
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    {
+                                                        (product.discount) ?
+                                                            <div className="col-6">
+                                                                <label>Réduction</label>
+                                                                <div className="input-group">
+                                                                    <input className="form-control text-center text-muted disabled" type="text" value={product.discount} disabled />
+                                                                    <span className="input-group-text">
+                                                                        €
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                            :
+                                                            ""
+                                                    }
+                                                    {
+                                                        (product.discountRate) ?
+                                                            <div className="col-6">
+                                                                <label>Réduction %</label>
+                                                                <div className="input-group">
+                                                                    <input className="form-control text-center text-muted disabled" type="text" value={product.discount} disabled />
+                                                                    <span className="input-group-text">
+                                                                        %
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                            :
+                                                            ""
+                                                    }
+                                                </div>
+                                            </div>
                                             <div className="d-flex mt-3 justify-content-around">
                                                 <Link to={`/product/${product.id}/view`} className="text-primary">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" className="bi bi-eye" viewBox="0 0 16 16">

@@ -16,7 +16,7 @@ function Navbar() {
                             <NavLink className="nav-link" to="/">Tableau de bord</NavLink>
                         </li>
                         <li className="nav-item">
-                            <NavLink className="nav-link" to="/category">Categories</NavLink>
+                            <NavLink className="nav-link" to="/category">Catégories</NavLink>
                         </li>
                         <li className="nav-item">
                             <NavLink className="nav-link" to="/product/list">Produits</NavLink>
@@ -28,10 +28,6 @@ function Navbar() {
                             <NavLink className="nav-link" to="/account">Compte</NavLink>
                         </li>
                     </ul>
-                    <form className="d-flex">
-                        <input className="form-control me-sm-2" type="search" placeholder="Mot-Clé" />
-                            <button className="btn btn-secondary my-2 my-sm-0" type="submit">Rechercher</button>
-                    </form>
                 </div>
             </div>
         </nav>
