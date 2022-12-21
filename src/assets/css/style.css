@@ -46,3 +46,11 @@
     bottom: 0px;
     left: 25px;
 }
+
+.product-add-button {
+    position: fixed;
+    top: 120px;
+    right: 25px;
+
+    z-index: 1;
+}

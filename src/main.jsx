@@ -12,10 +12,13 @@ import ErrorPage from './routes/error';
 import App from './app';
 import Home from './routes/home';
 import ProductList, { loader as productListLoader } from './routes/product/productList';
+import ProductNew, { loader as productNewLoader, action as productNewAction } from './routes/product/productNew';
 import ProductView, { loader as productViewLoader } from './routes/product/productView';
+import ProductEdit, { loader as productEditLoader, action as productEditAction} from './routes/product/productEdit';
 import { action as productDeleteAction } from './routes/product/productDelete';
 import Order from './routes/order';
 import Account from './routes/account';
+
 
 //Router
 const router = createBrowserRouter([
@@ -28,6 +31,13 @@ const router = createBrowserRouter([
         index: true,
         element: <Home />,
         errorElement: <ErrorPage />
+      },
+      {
+        path: "/product/new",
+        element: <ProductNew />,
+        loader: productNewLoader,
+        action: productNewAction,
+        errorElement: <ErrorPage />,
       },
       {
         path: "/product/list",
@@ -43,7 +53,9 @@ const router = createBrowserRouter([
       },
       {
         path: "/product/:product/edit",
-        action: productDeleteAction,
+        element: <ProductEdit />,
+        loader: productEditLoader,
+        action: productEditAction,
         errorElement: <ErrorPage />,
       },
       {
