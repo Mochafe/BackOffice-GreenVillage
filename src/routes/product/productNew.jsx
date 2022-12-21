@@ -56,13 +56,25 @@ export default function ProductNew() {
         return buff;
     }
 
+    function contentAdd(event) {
+
+        if(!event.code || event.key != "Enter") return;
+
+        let tempObj = {
+            ...contents
+        }
+        tempObj[document.getElementById("new-key").value] = document.getElementById("new-value").value;
+        setContents(tempObj);
+
+        document.getElementById("new-key").value = "";
+        document.getElementById("new-value").value = "";
+    }
+
     const categories = useLoaderData();
     const navigate = useNavigate();
 
     const [description, setDescription] = useState("");
     const [contents, setContents] = useState({});
-
-    console.log(contents);
 
     return (
         <>
@@ -166,18 +178,9 @@ export default function ProductNew() {
                         }
 
                         <div className="d-flex border input-group" id="contentInput">
-                            <input className="form-control border" id="new-key" type={"text"} placeholder="Example: Corps, Couleur..." />
-                            <input className="form-control border" id="new-value" type={"text"} placeholder="Example: Tilleul, Blanc..." />
-                            <button type="button" className="input-group-text" onClick={(event) => {
-                                let tempObj = {
-                                    ...contents
-                                }
-                                tempObj[document.getElementById("new-key").value] = document.getElementById("new-value").value;
-                                setContents(tempObj);
-
-                                document.getElementById("new-key").value = "";
-                                document.getElementById("new-value").value = "";
-                            }}>
+                            <input className="form-control border" id="new-key" type={"text"} placeholder="Example: Corps, Couleur..." onKeyDown={contentAdd}/>
+                            <input className="form-control border" id="new-value" type={"text"} placeholder="Example: Tilleul, Blanc..." onKeyDown={contentAdd}/>
+                            <button type="button" className="input-group-text" onClick={contentAdd} >
                                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
                                     <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
                                 </svg>
