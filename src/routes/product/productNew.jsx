@@ -1,5 +1,5 @@
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
-import { Link, useLoaderData, useNavigate, Form } from "react-router-dom";
+import { useLoaderData, useNavigate, Form, redirect } from "react-router-dom";
 import { useState } from "react";
 import config from "../../../config.json";
 
@@ -9,8 +9,19 @@ export async function loader() {
     return categories;
 }
 
+//TODO send form
 export async function action({ request }) {
+    //const product = Object.fromEntires(await request.formData());
+    const form = await request.formData();
 
+    fetch(`${config.url}/product/new`, {
+        method: "post",
+        body: form,
+        headers: request.header,
+        mode: "no-cors"
+    });
+
+    return redirect("/product/list")
 }
 
 function makeCategoryOption(categories) {
@@ -58,8 +69,6 @@ export default function ProductNew() {
 
     function contentAdd(event) {
 
-        if (!event.code || event.key != "Enter") return;
-
         let tempObj = {
             ...contents
         }
@@ -75,6 +84,7 @@ export default function ProductNew() {
 
     const [description, setDescription] = useState("");
     const [contents, setContents] = useState({});
+    const [images, setImages] = useState([]);
 
     return (
         <>
@@ -93,11 +103,13 @@ export default function ProductNew() {
             <div className="container">
                 <h1 className="text-center mt-5">Créer un produit</h1>
 
-                <Form className="row gy-3" method="post">
+                <Form className="row gy-3" method="post" encType="multipart/form-data" onSubmit={() => {
+                    document.getElementById("spinner").classList.remove("d-none");
+                }}>
 
                     <div className="col-6">
                         <label htmlFor="name">Nom du produit</label>
-                        <input className="form-control" id="name" name="name" type="text" placeholder="Example: Guitar XM-6125" required/>
+                        <input className="form-control" id="name" name="name" type="text" placeholder="Example: Guitar XM-6125" required />
                     </div>
                     <div className="col-6">
                         <label htmlFor="category">Categorie</label>
@@ -111,7 +123,7 @@ export default function ProductNew() {
                     <div className="col-4">
                         <label htmlFor="price">Prix</label>
                         <div className="input-group">
-                            <input className="form-control text-center" id="price" name="price" type="number" placeholder="42" required/>
+                            <input className="form-control text-center" id="price" name="price" type="number" placeholder="42" required />
                             <span className="input-group-text">
                                 €
                             </span>
@@ -120,7 +132,7 @@ export default function ProductNew() {
                     <div className="col-4">
                         <label htmlFor="quantity">Quantité</label>
                         <div className="input-group">
-                            <input className="form-control text-center" id="quantité" name="quantité" type="number" placeholder="42"/>
+                            <input className="form-control text-center" id="quantity" name="quantity" type="number" placeholder="42" />
                             <span className="input-group-text">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-box" viewBox="0 0 16 16">
                                     <path d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5 8 5.961 14.154 3.5 8.186 1.113zM15 4.239l-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.838L1 4.239v7.923l6.5 2.6zM7.443.184a1.5 1.5 0 0 1 1.114 0l7.129 2.852A.5.5 0 0 1 16 3.5v8.662a1 1 0 0 1-.629.928l-7.185 2.874a.5.5 0 0 1-.372 0L.63 13.09a1 1 0 0 1-.63-.928V3.5a.5.5 0 0 1 .314-.464L7.443.184z" />
@@ -178,8 +190,8 @@ export default function ProductNew() {
                         }
 
                         <div className="d-flex border input-group" id="contentInput">
-                            <input className="form-control border" id="new-key" type={"text"} placeholder="Example: Corps, Couleur..." onKeyDown={contentAdd} />
-                            <input className="form-control border" id="new-value" type={"text"} placeholder="Example: Tilleul, Blanc..." onKeyDown={contentAdd} />
+                            <input className="form-control border" id="new-key" type={"text"} placeholder="Example: Corps, Couleur..." />
+                            <input className="form-control border" id="new-value" type={"text"} placeholder="Example: Tilleul, Blanc..." />
                             <button type="button" className="input-group-text" onClick={contentAdd} >
                                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
                                     <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
@@ -188,18 +200,69 @@ export default function ProductNew() {
                         </div>
                     </div>
 
-                    <input type="hidden" name="content" value={contents} />
 
-                    <img id="preview" />
 
                     <div class="col-12">
                         <label htmlFor="images" class="form-label">Images</label>
-                        <input class="form-control" type="file" id="images" accept="image/*" multiple/>
+                        <input class="form-control border" type="file" id="images" name="images" accept="image/*" multiple onChange={async (event) => {
+                            let imgBuff = [];
+
+                            for (let i = 0; i < event.target.files.length; i++) {
+                                imgBuff.push({
+                                    file: event.target.files[i],
+                                });
+                            }
+
+                            setImages(imgBuff);
+                        }} />
                     </div>
 
-                    <button className="btn btn-primary my-5 w-25 mx-auto" type="submit">
-                        Créer le produit
-                    </button>
+
+                    {
+                        (images.length > 0) ?
+                            <>
+                                <label>Prévisualisation des images</label>
+                                <div id="imgCarousel" className="carousel carousel-dark slide" data-bs-ride="true">
+                                    <div className="carousel-indicators">
+                                        {images.map((image, index) => (
+                                            <button type="button" data-bs-target="#imgCarousel" data-bs-slide-to={index} className={(index === 0) ? "active" : ""} aria-current={(index === 0) ? "true" : "false"} aria-label={"Slide " + { index }} key={index}></button>
+                                        ))}
+                                    </div>
+                                    <div className="carousel-inner">
+                                        {
+                                            images.map((image, index) => (
+                                                <div className={`carousel-item ${(index === 0) ? "active" : ""}`} key={index}>
+                                                    <img src={(image.file) ? URL.createObjectURL(image.file) : ""} className="product-view-img" alt={(image.title) ? image.title : "Sans titre"} />
+                                                </div>
+                                            ))
+                                        }
+                                    </div>
+                                    <button className="carousel-control-prev" type="button" data-bs-target="#imgCarousel" data-bs-slide="prev">
+                                        <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span className="visually-hidden">Previous</span>
+                                    </button>
+                                    <button className="carousel-control-next" type="button" data-bs-target="#imgCarousel" data-bs-slide="next">
+                                        <span className="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span className="visually-hidden">Next</span>
+                                    </button>
+                                </div>
+                            </>
+                            :
+                            ""
+                    }
+
+
+
+                    <input type="hidden" name="content" value={JSON.stringify(contents)} />
+
+                    <div className="d-flex my-5 justify-content-center">
+
+                        <button className="btn btn-primary " type="submit">
+                            Créer le produit
+                        </button>
+
+                        <div class="spinner-border text-primary ms-3 mt-2 d-none" id="spinner" role="status"><span class="sr-only"></span></div>
+                    </div>
 
                 </Form>
             </div>
