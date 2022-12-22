@@ -13,11 +13,9 @@ export async function loader() {
 export async function action({ request }) {
     //const product = Object.fromEntires(await request.formData());
     const form = await request.formData();
-
     fetch(`${config.url}/product/new`, {
         method: "post",
         body: form,
-        headers: request.header,
         mode: "no-cors"
     });
 

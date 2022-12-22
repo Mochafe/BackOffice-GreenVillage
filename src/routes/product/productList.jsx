@@ -203,8 +203,7 @@ export default function ProductList() {
                                             <span className="fs-6 text-muted text-uppercase text-start ms-2">Catégorie: {product.category.name}</span>
                                             <span className="fs-6 text-muted text-uppercase text-end me-2">Id: {product.id}</span>
                                         </div>
-                                        //TODO image
-                                        <img src={(product.images[0])? config.url + product.images[0].path : "/image/" } className="card-img-top card-product-img" alt={product.images[0].title} />
+                                        <img src={(product.images[0])? config.url + product.images[0].path : "/image/product-placeholder.jpg" } className="card-img-top card-product-img" alt={product.images[0].title} />
                                         <div className="card-body">
                                             <h5 className="card-title card-product-name">{product.name}</h5>
                                             <div className="card-text card-product-description">
