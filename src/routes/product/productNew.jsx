@@ -11,12 +11,14 @@ export async function loader() {
 
 //TODO send form
 export async function action({ request }) {
-    //const product = Object.fromEntires(await request.formData());
-    const form = await request.formData();
-    fetch(`${config.url}/product/new`, {
+    const product = Object.fromEntries(await request.formData());
+    
+    fetch(`${config.url}/api/products`, {
         method: "post",
-        body: form,
-        mode: "no-cors"
+        headers: {
+            'Content-Type': 'application/json',
+          },
+        body: JSON.stringify(product),
     });
 
     return redirect("/product/list")
@@ -144,7 +146,7 @@ export default function ProductNew() {
                             <span className="input-group-text">
                                 -
                             </span>
-                            <input className="form-control text-center" id="discount" type="number" placeholder="5" />
+                            <input className="form-control text-center" id="discount" name="discount" type="number" placeholder="5" />
                             <span className="input-group-text">
                                 €
                             </span>
@@ -156,7 +158,7 @@ export default function ProductNew() {
                             <span className="input-group-text">
                                 -
                             </span>
-                            <input className="form-control text-center" id="discountRate" type="number" placeholder="7" />
+                            <input className="form-control text-center" id="discountRate" name="discountRate" type="number" placeholder="7" />
                             <span className="input-group-text">
                                 %
                             </span>
