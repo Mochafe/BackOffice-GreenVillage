@@ -35,6 +35,14 @@
     margin-right: auto;
 }
 
+.card-category {
+    min-height: 408px;
+}
+
+.card-category-img {
+    min-height: 250px;
+}
+
 .scroll-top {
     position: fixed;
     bottom: 50px;
