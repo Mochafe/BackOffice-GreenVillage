@@ -11,7 +11,18 @@ export async function loader() {
 
 //TODO send form
 export async function action({ request }) {
-    const product = Object.fromEntries(await request.formData());
+    let product = Object.fromEntries(await request.formData());
+
+    product.quantity = Number(product.quantity);
+    
+    if(product.discount == "") {
+        delete product.discount;
+    }
+    if(product.discountRate == "") {
+        delete product.discountRate;
+    }
+    product.content = JSON.parse(product.content);
+    console.log(product);
     
     fetch(`${config.url}/api/products`, {
         method: "post",
@@ -26,11 +37,10 @@ export async function action({ request }) {
 
 function makeCategoryOption(categories) {
     let buff = []
-
     categories["hydra:member"].forEach(value => {
         if (value.parent) {
             buff.push(
-                <option value={value.id}>{value.name}</option>
+                <option value={value[`@id`]}>{value.name}</option>
             )
         }
 
@@ -75,16 +85,18 @@ export default function ProductNew() {
         tempObj[document.getElementById("new-key").value] = document.getElementById("new-value").value;
         setContents(tempObj);
 
-        document.getElementById("new-key").value = "";
-        document.getElementById("new-value").value = "";
+        setContentKey("");
+        setContentValue("");
     }
 
     const categories = useLoaderData();
     const navigate = useNavigate();
 
     const [description, setDescription] = useState("");
-    const [contents, setContents] = useState({});
+    const [contents, setContents] = useState([]);
     const [images, setImages] = useState([]);
+    const [contentKey, setContentKey] = useState("");
+    const [contentValue, setContentValue] = useState("");
 
     return (
         <>
@@ -190,8 +202,12 @@ export default function ProductNew() {
                         }
 
                         <div className="d-flex border input-group" id="contentInput">
-                            <input className="form-control border" id="new-key" type={"text"} placeholder="Example: Corps, Couleur..." />
-                            <input className="form-control border" id="new-value" type={"text"} placeholder="Example: Tilleul, Blanc..." />
+                            <input className="form-control border" id="new-key" type={"text"} placeholder="Example: Corps, Couleur..." value={contentKey} onChange={(event) => {
+                                setContentKey(event.currentTarget.value);
+                            }}/>
+                            <input className="form-control border" id="new-value" type={"text"} placeholder="Example: Tilleul, Blanc..." value={contentValue} onChange={(event) => {
+                                setContentValue(event.currentTarget.value);
+                            }}/>
                             <button type="button" className="input-group-text" onClick={contentAdd} >
                                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
                                     <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
@@ -202,7 +218,7 @@ export default function ProductNew() {
 
 
 
-                    <div class="col-12">
+                    {/* <div class="col-12">
                         <label htmlFor="images" class="form-label">Images</label>
                         <input class="form-control border" type="file" id="images" name="images" accept="image/*" multiple onChange={async (event) => {
                             let imgBuff = [];
@@ -250,7 +266,7 @@ export default function ProductNew() {
                             :
                             ""
                     }
-
+ */}
 
 
                     <input type="hidden" name="content" value={JSON.stringify(contents)} />
