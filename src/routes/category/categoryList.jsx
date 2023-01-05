@@ -1,11 +1,25 @@
 import { useState } from "react";
-import { useLoaderData, Link, Form } from "react-router-dom";
+import { useLoaderData, Link, Form, redirect } from "react-router-dom";
 import config from "../../../config.json";
 
 export async function loader() {
     const categories = await (await fetch(`${config.url}/api/categories`)).json();
 
+    console.log(categories);
+
     return categories;
+}
+
+export async function deleteAction({ params }) {
+    const category = await (await fetch(`${config.url}/categories/${params.category}`)).json();
+    await fetch(`${config.url}/api/images/${category.image.id}`, {
+        method: "DELETE"
+    });
+    await fetch(`${config.url}/api/categories/${params.category}`, {
+        method: "DELETE"
+    });
+
+    return redirect("/category");
 }
 
 export default function CategoryList() {
@@ -77,9 +91,9 @@ export default function CategoryList() {
                                                             <path fillRule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
                                                         </svg>
                                                     </Link>
-                                                    <Form>
+                                                    <Form method="delete" action={`/category/${category.id}/delete`}>
                                                         <button type="submit" className="text-danger bg-white border-0" onClick={(event) => {
-                                                            event.currentTarget.innerHTML = <div className="spinner-border text-danger" role="status"><span className="sr-only"></span></div>;
+                                                            event.currentTarget.innerHTML = `<div class="spinner-border text-danger" role="status"><span class="sr-only"></span></div>`;
                                                         }}>
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" className="bi bi-trash" viewBox="0 0 16 16">
                                                                 <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
