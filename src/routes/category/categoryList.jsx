@@ -11,7 +11,12 @@ export async function loader() {
 }
 
 export async function deleteAction({ params }) {
-    const category = await (await fetch(`${config.url}/categories/${params.category}`)).json();
+    const category = await (await fetch(`${config.url}/api/categories/${params.category}`)).json();
+    if(category.parent) {
+        const parentCategory = await (await fetch(`${config.url}/api/categories/${category.parent.id}`)).json();
+       // parentCategory
+    }
+
     await fetch(`${config.url}/api/images/${category.image.id}`, {
         method: "DELETE"
     });
@@ -35,6 +40,13 @@ export default function CategoryList() {
                 <h1 className="text-center mt-5">Liste des catégories</h1>
 
                 <h5 className="text-center text-muted">({(filtredCategories.length) ? filtredCategories.length : "Il n'y a pas de catégories"})</h5>
+
+                <Link to={"/category/new"} className="product-add-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" className="bi bi-plus-square" viewBox="0 0 16 16">
+                            <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
+                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                        </svg>
+                    </Link>
 
 
                 <div className="row mt-3">
@@ -80,7 +92,7 @@ export default function CategoryList() {
                                                 <span className="fs-6 text-muted text-uppercase text-end me-2">Id: {category.id}</span>
                                             </div>
                                             <div className="card-category-img mx-auto">
-                                                <img src={(category.image) ? config.url + category.image.path : "/image/product-placeholder.jpg"} className="card-img-top card-product-img" alt={(category.image) ? category.image.title : "Image placeholder"} />
+                                                <img src={(category.image) ? config.url + category.image.path : "image/product-placeholder.jpg"} className="card-img-top card-product-img" alt={(category.image) ? category.image.title : "Image placeholder"} />
                                             </div>
                                             <div className="card-body">
                                                 <h5 className="card-title card-product-name">{category.name}</h5>

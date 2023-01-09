@@ -17,6 +17,7 @@ import ProductView, { loader as productViewLoader } from './routes/product/produ
 import ProductEdit, { loader as productEditLoader, action as productEditAction} from './routes/product/productEdit';
 import { action as productDeleteAction } from './routes/product/productDelete';
 import CategoryList, { loader as categoriesLoader, deleteAction as categoriesDeleteAction } from './routes/category/categoryList';
+import CategoryNew, { loader as categoriesNewLoader, action as categoriesNewAction} from './routes/category/categoryNew';
 import Order from './routes/order';
 import Account from './routes/account';
 
@@ -69,6 +70,13 @@ const router = createBrowserRouter([
         element: <CategoryList />,
         loader: categoriesLoader,
         errorElement: <ErrorPage />,
+      },
+      {
+        path: "/category/new",
+        element: <CategoryNew />,
+        loader: categoriesNewLoader,
+        action: categoriesNewAction,
+        errorElement: <ErrorPage />
       },
       {
         path: "/category/:category/delete",
