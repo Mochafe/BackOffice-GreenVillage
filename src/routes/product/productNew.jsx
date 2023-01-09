@@ -16,8 +16,6 @@ export async function action({ request }) {
     let imgForm = new FormData();
     const imgs = form.getAll("images[]");
 
-    console.log(imgs);
-
     imgs.forEach(img => {
         imgForm.append("images[]", img)
     });
