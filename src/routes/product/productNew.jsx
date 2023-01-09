@@ -11,24 +11,58 @@ export async function loader() {
 
 export async function action({ request }) {
     const form = await request.formData();
-    console.log(form)
     let product = Object.fromEntries(form);
 
     let imgForm = new FormData();
     const imgs = form.getAll("images[]");
+
+    console.log(imgs);
+
     imgs.forEach(img => {
         imgForm.append("images[]", img)
     });
     imgForm.append("productName", product.name);
 
-    console.log(imgForm)
 
     await fetch(`${config.url}/api/product_images`, {
         method: "POST",
         body: imgForm
     });
 
-    //delete product.images;
+    delete product["images[]"];
+
+    let imgPromises = [];
+
+    let count = 0;
+    imgForm.forEach((val, key) => {
+        if(!val.name) return;
+
+        let extension = val.name.split(".");
+        extension = extension.pop();
+        imgPromises.push(fetch(`${config.url}/api/images`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                "path": `/img/product/${product.name}/${count}.${extension}`,
+                "title": "None"
+            })
+        }))
+    })
+
+    let imgApi = [];
+    let jsonPromise = [];
+    await (await Promise.all(imgPromises)).forEach((val) => {
+        jsonPromise.push(val.json());
+    });
+    
+    await (await Promise.all(jsonPromise)).forEach((val) => {
+        imgApi.push(val["@id"]);
+    })
+
+
+    product.images = imgApi;
 
     product.quantity = Number(product.quantity);
 
