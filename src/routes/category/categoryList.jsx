@@ -1,38 +1,27 @@
 import { useState } from "react";
-import { useLoaderData, Link, Form, redirect } from "react-router-dom";
+import { useLoaderData, Link, Form } from "react-router-dom";
 import config from "../../../config.json";
 
 export async function loader() {
     const categories = await (await fetch(`${config.url}/api/categories`)).json();
 
-    console.log(categories);
-
     return categories;
 }
 
-export async function deleteAction({ params }) {
-    const category = await (await fetch(`${config.url}/api/categories/${params.category}`)).json();
-    if(category.parent) {
-        const parentCategory = await (await fetch(`${config.url}/api/categories/${category.parent.id}`)).json();
-       // parentCategory
-    }
-
-    await fetch(`${config.url}/api/images/${category.image.id}`, {
-        method: "DELETE"
-    });
-    await fetch(`${config.url}/api/categories/${params.category}`, {
-        method: "DELETE"
-    });
-
-    return redirect("/category");
-}
 
 export default function CategoryList() {
-    const [categories, setCategories] = useState(useLoaderData()["hydra:member"]);
-    const [filtredCategories, setFiltredCategories] = useState(categories);
+    const categories = useLoaderData()["hydra:member"];
+    const filtredCategories = categories;
     const [search, setSearch] = useState("");
     const [categoriesCheckbox, setCategoriesCheckbox] = useState(true);
     const [subCategoriesCheckbox, setSubCategoriesCheckbox] = useState(true);
+
+
+    window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: "smooth"
+    })
 
     return (
         <>
@@ -92,7 +81,7 @@ export default function CategoryList() {
                                                 <span className="fs-6 text-muted text-uppercase text-end me-2">Id: {category.id}</span>
                                             </div>
                                             <div className="card-category-img mx-auto">
-                                                <img src={(category.image) ? config.url + category.image.path : "image/product-placeholder.jpg"} className="card-img-top card-product-img" alt={(category.image) ? category.image.title : "Image placeholder"} />
+                                                <img src={(category.image) ? config.url + category.image.path : "/image/product-placeholder.jpg"} className="card-img-top card-product-img" alt={(category.image) ? category.image.title : "Image placeholder"} />
                                             </div>
                                             <div className="card-body">
                                                 <h5 className="card-title card-product-name">{category.name}</h5>

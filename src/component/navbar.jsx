@@ -16,7 +16,7 @@ function Navbar() {
                             <NavLink className="nav-link" to="/">Tableau de bord</NavLink>
                         </li>
                         <li className="nav-item">
-                            <NavLink className="nav-link" to="/category">Catégories</NavLink>
+                            <NavLink className="nav-link" to="/category/list">Catégories</NavLink>
                         </li>
                         <li className="nav-item">
                             <NavLink className="nav-link" to="/product/list">Produits</NavLink>

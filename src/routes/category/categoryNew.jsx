@@ -12,27 +12,48 @@ export async function action({ request }) {
 
     if(!formObj.name) return redirect("/category/new");
 
+    if(!formObj.parent) delete formObj.parent;
+
+
     let imgForm = new FormData();
     imgForm.append("image", formObj.image);
     imgForm.append("name", formObj.name);
 
-    const imgObj = await (await fetch(`${config.url}/api/category_image`, {
+    //send img
+    await (await fetch(`${config.url}/api/category_image`, {
         method: "POST",
         body: imgForm
     })).json()
 
 
 
-    formObj.image = imgObj["@id"];
 
-    console.log(imgObj);
+    const imgObj = await (await fetch(`${config.url}/api/images`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            path: `/img/category/${formObj.name}.${getExtension(formObj.image.name)}`,
+            title: formObj.name
+        })
+    })).json();
+
+    formObj.image = imgObj["@id"];
 
     await fetch(`${config.url}/api/categories`, {
         method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
         body: JSON.stringify(formObj)
     });
 
     return redirect("/category");
+}
+
+function getExtension(str) {
+    return str.split(".").pop();
 }
 
 
@@ -64,8 +85,8 @@ export default function CategoryNew() {
                         <input className="form-control" id="name" name="name" type="text" placeholder="Guitare, Batterie..." required />
                     </div>
                     <div className="col-6">
-                        <label htmlFor="category">Parent</label>
-                        <select className="form-select" id="category" name="category">
+                        <label htmlFor="parent">Parent</label>
+                        <select className="form-select" id="parent" name="parent">
                             <option value={""}>Catégorie principale</option>
                             {
                                 categories.map(category => (
