@@ -49,7 +49,7 @@ export async function action({ request }) {
         body: JSON.stringify(formObj)
     });
 
-    return redirect("/category");
+    return redirect("/category/list");
 }
 
 function getExtension(str) {
