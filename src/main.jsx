@@ -10,7 +10,7 @@ import './assets/css/style.css'
 //Routes, Loader & Action Import
 import ErrorPage from './routes/error';
 import App from './app';
-import Home from './routes/home';
+import Home from './routes/home/home';
 import ProductList, { loader as productListLoader } from './routes/product/productList';
 import ProductNew, { loader as productNewLoader, action as productNewAction } from './routes/product/productNew';
 import ProductView, { loader as productViewLoader } from './routes/product/productView';
