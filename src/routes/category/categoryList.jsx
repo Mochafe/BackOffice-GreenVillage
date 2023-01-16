@@ -81,7 +81,7 @@ export default function CategoryList() {
                                                 <span className="fs-6 text-muted text-uppercase text-end me-2">Id: {category.id}</span>
                                             </div>
                                             <div className="card-category-img mx-auto">
-                                                <img src={(category.image) ? config.url + category.image.path : "/image/product-placeholder.jpg"} className="card-img-top card-product-img" alt={(category.image) ? category.image.title : "Image placeholder"} />
+                                                <img src={(category.image) ? config.url + category.image.path : "./image/product-placeholder.jpg"} className="card-img-top card-product-img" alt={(category.image) ? category.image.title : "Image placeholder"} />
                                             </div>
                                             <div className="card-body">
                                                 <h5 className="card-title card-product-name">{category.name}</h5>
