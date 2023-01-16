@@ -20,32 +20,7 @@ ChartJS.register(
     Legend
 );
 
-export const options = {
-    responsive: true,
-    plugins: {
-        legend: {
-            position: 'top',
-        },
-        title: {
-            display: true,
-            text: 'Chart.js Bar Chart',
-        },
-    },
-};
 
-const labels = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
-
-export const data = {
-    labels,
-    datasets: [
-        {
-            label: "Chiffre d'affaire par mois",
-            data: [200, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10],
-            backgroundColor: 'deepskyblue',
-            borderWidth: 1
-        }
-    ],
-};
 
 const fetchSuppliers = async () => {
     return await (await fetch(`${config.url}/api/suppliers.json`)).json();
@@ -53,6 +28,10 @@ const fetchSuppliers = async () => {
 
 const fetchTurnoverSupplier = async (id = 1) => {
     return await (await fetch(`${config.url}/api/supplier_turnover/${id}`)).json();
+}
+
+const fetchTurnover = async (year = 0) => {
+    return await (await fetch(`${config.url}/api/turnover_months/${year}`)).json();
 }
 
 const SupplierOption = () => {
@@ -76,45 +55,71 @@ const SupplierOption = () => {
     )
 }
 
-const TurnoverChart = () => {
-    const context = document.getElementById("context");
+const TurnoverChart = (props) => {
 
+    console.log("Refreshed")
 
-    /* new Chart(context, {
-        type: "bar",
-        data: {
-            labels: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"],
-            datasets: [{
-                label: "Chiffre d'affaire par mois",
-                data: [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10],
-                borderWidth: 1
-            }]
+    const options = {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'top',
+            },
+            title: {
+                display: true,
+                text: "Graphique du chiffre d'affaire pour une année",
+            },
         },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
+    };
+
+    const labels = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+
+    const data = {
+        labels,
+        datasets: [
+            {
+                label: "Chiffre d'affaire par mois",
+                data: (props.data)? Object.values(props.data) : [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10],
+                backgroundColor: 'deepskyblue',
+                borderWidth: 2
             }
-        }
-    });
- */
+        ],
+    };
+
 
     return (
         <Bar options={options} data={data} />
     )
 }
 
+const YearsOption = ({start = 2020, end = 2030}) => {
+    let opt = [];
+
+    for(let i = start; i < end; i++) {
+        opt.push(<option value={i}>{i}</option>);
+    }
+
+    return opt;
+}
+
 
 export default function Home() {
     const [turnover, setTurnover] = useState(0);
     const turnoverChart = useRef(null);
+    const [data, setData] = useState([]);
 
     const handleSelect = (event) => {
         fetchTurnoverSupplier(event.target.value)
             .then(response => {
                 setTurnover(response.turnover);
             });
+    }
+
+    const handleSelectYear = (event) => {
+        fetchTurnover(event.target.value)
+            .then(response => {
+                setData(response);
+            })
     }
 
     useEffect(() => {
@@ -146,12 +151,12 @@ export default function Home() {
                 <div className="mt-5">
                     <h3>Chiffre d'affaire par année</h3>
                     <label htmlFor="year">Année</label>
-                    <select className="form-select" id="year" onChange={handleSelect}>
-                        {/* TODO yearsOption */}
+                    <select className="form-select" id="year" onChange={handleSelectYear}>
+                        <YearsOption start={2000} end={2100}/>
                     </select>
 
                     <label className="mt-3" htmlFor="turnover">Chiffre d'affaire</label>
-                    <TurnoverChart />
+                    <TurnoverChart data={data}  />
                 </div>
 
 
