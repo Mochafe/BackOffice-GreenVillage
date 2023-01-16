@@ -102,7 +102,6 @@ const YearsOption = ({start = 2020, end = 2030}) => {
 
 export default function Home() {
     const [turnover, setTurnover] = useState(0);
-    const turnoverChart = useRef(null);
     const [data, setData] = useState([]);
 
     const handleSelect = (event) => {
