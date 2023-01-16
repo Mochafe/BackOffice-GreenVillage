@@ -56,9 +56,6 @@ const SupplierOption = () => {
 }
 
 const TurnoverChart = (props) => {
-
-    console.log("Refreshed")
-
     const options = {
         responsive: true,
         plugins: {
@@ -78,7 +75,7 @@ const TurnoverChart = (props) => {
         labels,
         datasets: [
             {
-                label: "Chiffre d'affaire par mois",
+                label: "Chiffre d'affaire de ce mois",
                 data: (props.data)? Object.values(props.data) : [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10],
                 backgroundColor: 'deepskyblue',
                 borderWidth: 2
