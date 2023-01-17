@@ -21,12 +21,12 @@ function Navbar() {
                         <li className="nav-item">
                             <NavLink className="nav-link" to="/product/list">Produits</NavLink>
                         </li>
-                        <li className="nav-item">
+                        {/* <li className="nav-item">
                             <NavLink className="nav-link" to="/order">Commandes</NavLink>
                         </li>
                         <li className="nav-item">
                             <NavLink className="nav-link" to="/account">Compte</NavLink>
-                        </li>
+                        </li> */}
                     </ul>
                 </div>
             </div>
