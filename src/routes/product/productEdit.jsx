@@ -29,7 +29,7 @@ export async function action({ request }) {
     }
     product.content = JSON.parse(product.content);
     
-    await fetch(`${config.url}/api/products/${id}`, {
+    await FetchInterceptor(`${config.url}/api/products/${id}`, {
         method: "PATCH",
         headers: {
             'Content-Type': 'application/merge-patch+json',

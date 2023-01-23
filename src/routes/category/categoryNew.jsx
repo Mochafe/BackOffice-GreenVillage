@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Form, redirect, useLoaderData } from "react-router-dom";
 import config from "../../../config.json";
+import FetchInterceptor from "../../fetchInterceptor";
 
 export async function loader() {
-    return await (await fetch(`${config.url}/api/categories?exists[parent]=false`)).json();
+    return await (await FetchInterceptor(`${config.url}/api/categories?exists[parent]=false`)).json();
 }
 
 export async function action({ request }) {
@@ -20,7 +21,7 @@ export async function action({ request }) {
     imgForm.append("name", formObj.name);
 
     //send img
-    await (await fetch(`${config.url}/api/category_image`, {
+    await (await FetchInterceptor(`${config.url}/api/category_image`, {
         method: "POST",
         body: imgForm
     })).json()
@@ -28,7 +29,7 @@ export async function action({ request }) {
 
 
 
-    const imgObj = await (await fetch(`${config.url}/api/images`, {
+    const imgObj = await (await FetchInterceptor(`${config.url}/api/images`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -41,7 +42,7 @@ export async function action({ request }) {
 
     formObj.image = imgObj["@id"];
 
-    await fetch(`${config.url}/api/categories`, {
+    await FetchInterceptor(`${config.url}/api/categories`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"

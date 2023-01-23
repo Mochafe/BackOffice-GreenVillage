@@ -19,19 +19,25 @@ ChartJS.register(
     Tooltip,
     Legend
 );
+import Cookies from "js-cookie";
+import FetchInterceptor from "../../fetchInterceptor";
 
 
 
 const fetchSuppliers = async () => {
-    return await (await fetch(`${config.url}/api/suppliers.json`)).json();
+    return await (await FetchInterceptor(`${config.url}/api/suppliers`, {
+        headers: {
+            'Accept': 'application/json',
+        },
+    })).json();
 }
 
 const fetchTurnoverSupplier = async (id = 1) => {
-    return await (await fetch(`${config.url}/api/supplier_turnover/${id}`)).json();
+    return await (await FetchInterceptor(`${config.url}/api/supplier_turnover/${id}`)).json();
 }
 
 const fetchTurnover = async (year = 0) => {
-    return await (await fetch(`${config.url}/api/turnover_months/${year}`)).json();
+    return await (await FetchInterceptor(`${config.url}/api/turnover_months/${year}`)).json();
 }
 
 const SupplierOption = () => {
@@ -76,7 +82,7 @@ const TurnoverChart = (props) => {
         datasets: [
             {
                 label: "Chiffre d'affaire de ce mois",
-                data: (props.data)? Object.values(props.data) : [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10],
+                data: (props.data) ? Object.values(props.data) : [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10],
                 backgroundColor: 'deepskyblue',
                 borderWidth: 2
             }
@@ -89,10 +95,10 @@ const TurnoverChart = (props) => {
     )
 }
 
-const YearsOption = ({start = 2020, end = 2030}) => {
+const YearsOption = ({ start = 2020, end = 2030 }) => {
     let opt = [];
 
-    for(let i = start; i < end; i++) {
+    for (let i = start; i < end; i++) {
         opt.push(<option value={i}>{i}</option>);
     }
 
@@ -148,11 +154,11 @@ export default function Home() {
                     <h3>Chiffre d'affaire par année</h3>
                     <label htmlFor="year">Année</label>
                     <select className="form-select" id="year" onChange={handleSelectYear}>
-                        <YearsOption start={2000} end={2100}/>
+                        <YearsOption start={2000} end={2100} />
                     </select>
 
                     <label className="mt-3" htmlFor="turnover">Chiffre d'affaire</label>
-                    <TurnoverChart data={data}  />
+                    <TurnoverChart data={data} />
                 </div>
 
 

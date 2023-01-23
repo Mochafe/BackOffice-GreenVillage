@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { useLoaderData, Link, Form } from "react-router-dom";
 import config from "../../../config.json";
+import FetchInterceptor from "../../fetchInterceptor";
 
 export async function loader() {
-    const categories = await (await fetch(`${config.url}/api/categories`)).json();
+    const categories = await (await FetchInterceptor(`${config.url}/api/categories`)).json();
 
     return categories;
 }

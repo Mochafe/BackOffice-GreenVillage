@@ -1,5 +1,6 @@
 import { useLoaderData, Link, Form } from "react-router-dom";
 import config from "../../../config.json"
+import FetchInterceptor from "../../fetchInterceptor";
 
 
 export async function loader({ request }) {
@@ -10,9 +11,9 @@ export async function loader({ request }) {
     });
 
 
-    let categories = await (await fetch(`${config.url}/api/categories`)).json()
+    let categories = await (await FetchInterceptor(`${config.url}/api/categories`)).json()
 
-    const products = await (await fetch(`${config.url}/api/products?${makeUrlFromParams(params)}`)).json();
+    const products = await (await FetchInterceptor(`${config.url}/api/products?${makeUrlFromParams(params)}`)).json();
 
     return { products, params, categories };
 }

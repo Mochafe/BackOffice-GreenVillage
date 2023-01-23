@@ -2,9 +2,10 @@ import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import { useLoaderData, useNavigate, Form, redirect } from "react-router-dom";
 import { useState } from "react";
 import config from "../../../config.json";
+import FetchInterceptor from "../../fetchInterceptor";
 
 export async function loader() {
-    const categories = await (await fetch(`${config.url}/api/categories`)).json();
+    const categories = await (await FetchInterceptor(`${config.url}/api/categories`)).json();
 
     return categories;
 }
@@ -22,7 +23,7 @@ export async function action({ request }) {
     imgForm.append("productName", product.name);
 
 
-    await fetch(`${config.url}/api/product_images`, {
+    await FetchInterceptor(`${config.url}/api/product_images`, {
         method: "POST",
         body: imgForm
     });
@@ -37,7 +38,7 @@ export async function action({ request }) {
 
         let extension = val.name.split(".");
         extension = extension.pop();
-        imgPromises.push(fetch(`${config.url}/api/images`, {
+        imgPromises.push(FetchInterceptor(`${config.url}/api/images`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -71,9 +72,8 @@ export async function action({ request }) {
         delete product.discountRate;
     }
     product.content = JSON.parse(product.content);
-    console.log(product);
 
-    await fetch(`${config.url}/api/products`, {
+    await FetchInterceptor(`${config.url}/api/products`, {
         method: "post",
         headers: {
             'Content-Type': 'application/json',

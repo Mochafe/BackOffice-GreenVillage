@@ -21,6 +21,7 @@ import CategoryNew, { loader as categoriesNewLoader, action as categoriesNewActi
 import { action as categoriesDeleteAction } from "./routes/category/categoryDelete";
 import Order from './routes/order';
 import Account from './routes/account';
+import { Authentification } from './routes/auth';
 
 
 //Router
@@ -31,7 +32,7 @@ const router = createHashRouter([
     errorElement: <ErrorPage />,
     children: [
       {
-        index: true,
+        path: "/dashboard",
         element: <Home />,
         errorElement: <ErrorPage />
       },
@@ -101,6 +102,10 @@ const router = createHashRouter([
         errorElement: <ErrorPage />
       }
     ]
+  },
+  {
+    path: "/auth",
+    element: <Authentification />
   }
 ]);
 

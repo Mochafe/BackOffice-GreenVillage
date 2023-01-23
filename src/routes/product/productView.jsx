@@ -1,9 +1,10 @@
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import { Link, useLoaderData, useNavigate, Form } from "react-router-dom";
 import config from "../../../config.json";
+import FetchInterceptor from "../../fetchInterceptor";
 
 export async function loader({ params }) {
-    const product = await (await fetch(`${config.url}/api/products/${params.product}.json`)).json()
+    const product = await (await FetchInterceptor(`${config.url}/api/products/${params.product}.json`)).json()
     return product
 }
 
