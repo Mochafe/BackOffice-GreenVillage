@@ -7,9 +7,7 @@ const FetchInterceptor = async (url, config = {}) => {
         } else {
             config.headers = { Authorization: `Bearer ${Cookies.get("token")}` }
         }
-        
-        console.log(config)
-        
+                
         const fetchRes = await fetch(url, (config) ? {
             ...config,
         } : "");
